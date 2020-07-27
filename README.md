@@ -34,4 +34,16 @@ product_ProductName | TEXT
 
 建立兩支API功能
 
-第一支API : select_getitemcost
+###第一支API : select_getitemcost
+
+輸入 lineItem_UsageAccountId ，回傳該ID各項產品的lineItem_UnblendedCost總合，先不列出Cost為0的項目
+URL : /mydataTest?usageid=lineItem_UsageAccountId
+輸出內容:
+
+ ```JSON
+            {
+                "{product/productname_A}": "sum(lineitem/unblendedcost)",
+                "{product/productname_B}": "sum(lineitem/unblendedcost)",
+                ...
+            }
+  ```
