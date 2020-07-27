@@ -37,13 +37,38 @@ product_ProductName | TEXT
 ###第一支API : select_getitemcost
 
 輸入 lineItem_UsageAccountId ，回傳該ID各項產品的lineItem_UnblendedCost總合，先不列出Cost為0的項目
-URL : /mydataTest?usageid=lineItem_UsageAccountId
-輸出內容:
+
+####URL : /mydataTest?usageid=lineItem_UsageAccountId
+
+####輸出內容:
 
  ```JSON
-            {
-                "{product/productname_A}": "sum(lineitem/unblendedcost)",
-                "{product/productname_B}": "sum(lineitem/unblendedcost)",
+            [
+                ["product_ProductName_A",sum(lineItem_UnblendedCost)],
+                ["product_ProductName_B",sum(lineItem_UnblendedCost)], ...
+            ]
+  ```
+  
+###第二支API : select_usageamount
+
+輸入 lineItem_UsageAccountId ，回傳各項產品**每日**使用量。我認為這題較為複雜，各項產品使用的紀錄從單日使用到一整個月每日使用都有；目前想到最直接的解決方法是先撈出各項產品名稱，再依照各項產品抓出有使用的日期區間，再依照該日期區間，抓取每日的使用量。這樣迴圈地跑法會效能會非常不佳，未來要繼續尋找其他方式進行優化，另外也可以想辦法顯示資料抓取進度，避免user無止盡得等待。
+
+####URL : /mydataTest?dailyusageid=lineItem_UsageAccountId
+
+####輸出內容:
+
+ ```JSON
+            [
+                "product_ProductName_A",
+                [
+                  "YYYY-MM-01" , [sum(lineItem_UsageAmount)] ,
+                  "YYYY-MM-02" , [sum(lineItem_UsageAmount)] , ...
+                ]
+                "product_ProductName_B",
+                [
+                  "YYYY-MM-01" , [sum(lineItem_UsageAmount)] ,
+                  "YYYY-MM-02" , [sum(lineItem_UsageAmount)] , ...
+                ]
                 ...
-            }
+            ]
   ```
